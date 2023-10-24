@@ -1,9 +1,9 @@
-.page__search {
+.search {
   padding: 70px 70px 0;
 }
 
 @media screen and (max-width:1023px) {
-  .page__search {
+  .search {
     padding-top: 80px;
     padding-left: 30px;
     padding-right: 30px;
@@ -11,7 +11,7 @@
 }
 
 @media screen and (max-width:767px) {
-  .page__search {
+  .search {
     padding-top: 78px;
     padding-left: 14px;
     padding-right: 14px;
@@ -39,7 +39,6 @@
   margin-bottom: 16px;
   padding-bottom: 11px;
   box-sizing: border-box;
-
   border-bottom: 1.5px solid #424242;
 }
 
@@ -80,7 +79,7 @@
   outline: 0.2px solid #4285F4;
 }
 
-.search_submit {
+.search__submit {
   width: 34px;
   height: 34px;
   padding: 0;
@@ -94,7 +93,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .search_submit:hover {
+  .search__submit:hover {
     opacity: 0.7;
   }
 }

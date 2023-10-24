@@ -1,6 +1,7 @@
 .gallery__card {
   background-color: #222222;
   width: 100%;
+  border-radius: 6px;
 }
 
 .gallery__card-group {
