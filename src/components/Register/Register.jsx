@@ -1,50 +1,66 @@
 import Input from "../Input/Input";
 import SectionLogin from "../SectionLogin/SectionLogin";
-import useFormValidation from '../../hooks/useFormValidation'
-import { useNavigate } from "react-router-dom";
+import useFormValidation from "../../hooks/useFormValidation";
+import { EmailRegex } from "../../utils/constants";
 
+export default function Register({ name, onRegister, setIsError }) {
+  const { values, errors, isInputValid, isValid, handleChange } =
+    useFormValidation();
 
-export default function Login({ name, setLoggedIn }) {
-  const navigate = useNavigate()
-  const { values, errors, isInputValid, isValid, handleChange, } = useFormValidation()
-
-  function onLogin(evt) {
-    evt.preventDefault()
-    navigate('/signin')
-    setLoggedIn(true)
+  function onSubmit(evt) {
+    evt.preventDefault();
+    onRegister(values.username, values.email, values.password);
   }
 
   return (
-    <SectionLogin name={name} isValid={isValid} onSubmit={onLogin}>
+    <SectionLogin
+      name={name}
+      isValid={isValid}
+      onSubmit={onSubmit}
+      setIsError={setIsError}
+    >
       <Input
-        name='username'
-        type='text'
-        title='Имя'
-        minLength = '2'
+        name="username"
+        type="text"
+        title="Имя"
+        minLength="2"
         value={values.username}
         isInputValid={isInputValid.username}
         error={errors.username}
-        onChange={handleChange}
+        onChange={(evt) => {
+          handleChange(evt);
+          setIsError(false);
+        }}
+        placeholder="Введите ваше имя"
       />
       <Input
-        name='email'
-        type='email'
-        title='E-mail'
+        name="email"
+        type="email"
+        title="E-mail"
         value={values.email}
         isInputValid={isInputValid.email}
         error={errors.email}
-        onChange={handleChange}
+        onChange={(evt) => {
+          handleChange(evt);
+          setIsError(false);
+        }}
+        pattern={EmailRegex}
+        placeholder="Введите вашу электронную почту"
       />
       <Input
-        name='password'
-        type='password'
-        title='Пароль'
-        minLength = '3'
+        name="password"
+        type="password"
+        title="Пароль"
+        minLength="5"
         value={values.password}
         isInputValid={isInputValid.password}
         error={errors.password}
-        onChange={handleChange}
+        onChange={(evt) => {
+          handleChange(evt);
+          setIsError(false);
+        }}
+        placeholder="Введите ваш пароль"
       />
     </SectionLogin>
-  )
+  );
 }

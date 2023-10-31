@@ -1,45 +1,75 @@
-import { useState } from 'react'
-import useFormValidation from '../../hooks/useFormValidation'
-import FilterCheckbox from '../FilterCheckbox/FilterCheckbox'
-import './SearchForm.css'
+import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
+import ErrorContext from "../../contexts/ErrorContext";
+import "./SearchForm.css";
+import { useEffect } from "react";
+import { useContext } from "react";
+import useFormValidation from "../../hooks/useFormValidation";
+import { useLocation } from "react-router-dom";
 
-export default function SearchForm({ isCheck, changeShot }) {
-  const [isError,setIsError] = useState(false)
-  const {values, isValid, handleChange} = useFormValidation()
+export default function SearchForm({
+  isCheck,
+  changeShort,
+  searchedMovie,
+  searchMovies,
+  setIsError,
+  savedMovies,
+}) {
+  const { pathname } = useLocation();
+  const isError = useContext(ErrorContext);
+  const { values, handleChange, reset } = useFormValidation();
+
+  useEffect(() => {
+    if (pathname === "/saved-movies" && savedMovies.length === 0) {
+      reset({ search: "" });
+    } else {
+      reset({ search: searchedMovie });
+    }
+    setIsError(false);
+  }, [searchedMovie, reset, setIsError, pathname, savedMovies]);
 
   function onSubmit(evt) {
-    evt.preventDefault()
-    if (!isValid) {
-      setIsError(true)
-      return
+    evt.preventDefault();
+    if (evt.target.search.value) {
+      searchMovies(evt.target.search.value);
+      setIsError(false);
     } else {
-      setIsError(false)
+      setIsError(true);
     }
   }
 
   return (
-    <section className="search">
+    <section className="search page__search">
       <div className="search__container">
         <form
           noValidate
           className="search__form"
           name={"SearchForm"}
-          value={values.search}
           onSubmit={onSubmit}
         >
           <input
             type="text"
+            name="search"
             placeholder="Фильм"
             className="search__input"
+            value={values.search || ""}
+            onChange={(evt) => {
+              handleChange(evt);
+              setIsError(false);
+            }}
             required
-            onChange={handleChange}
           />
-          <button className="search__submit"></button>
+          <button
+            type="submit"
+            className={`search__submit`}
+          ></button>
         </form>
         <span className={`search__error ${isError && "search__error_active"}`}>
-          {isError ? "Введите ключевое слово" : ""}
+          {"Введите ключевое слово"}
         </span>
-        <FilterCheckbox isCheck={isCheck} changeShot={changeShot} />
+        <FilterCheckbox
+          isCheck={isCheck}
+          changeShort={changeShort}
+        />
       </div>
     </section>
   );

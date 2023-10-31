@@ -6,6 +6,7 @@ export default function useFormValidation() {
   const [isInputValid, setIsInputValid] = useState({})
   const [isValid, setIsValid] = useState(false)
 
+
   function handleChange(evt) {
     const name = evt.target.name
     const value = evt.target.value
@@ -35,7 +36,7 @@ export default function useFormValidation() {
     setErrors({})
     setIsInputValid({})
     setIsValid(false)
-  },[])
+  }, [])
 
   return { values, errors, isInputValid, isValid, handleChange, setValue, reset }
 }
