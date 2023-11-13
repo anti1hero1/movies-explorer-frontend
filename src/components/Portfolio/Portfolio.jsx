@@ -16,7 +16,7 @@ export default function Portfolio() {
                 className="portfolio__link"
               >
                 <p className="portfolio__subtitle">Статичный сайт</p>
-                <button type="button" className="portfolio__button"></button>
+                <span className="portfolio__button"></span>
               </Link>
             </li>
             <li className="portfolio__list">
@@ -26,7 +26,7 @@ export default function Portfolio() {
                 className="portfolio__link"
               >
                 <p className="portfolio__subtitle">Адаптивный сайт</p>
-                <button type="button" className="portfolio__button"></button>
+                <span className="portfolio__button"></span>
               </Link>
             </li>
             <li className="portfolio__list">
@@ -36,7 +36,7 @@ export default function Portfolio() {
                 className="portfolio__link portfolio__link_type_last"
               >
                 <p className="portfolio__subtitle">Одностраничное приложение</p>
-                <button type="button" className="portfolio__button"></button>
+                <span className="portfolio__button"></span>
               </Link>
             </li>
           </ul>

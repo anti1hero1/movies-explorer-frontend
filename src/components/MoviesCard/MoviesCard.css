@@ -15,7 +15,8 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  max-width: 300px;
+  max-width: 206px;
+  width: 100%;
 }
 
 @media screen and (max-width: 1023px) {
@@ -26,17 +27,16 @@
 
 @media screen and (max-width: 767px) {
   .gallery__text-group {
-    max-width: 235px;
+    max-width: 248px;
   }
 }
 
 .gallery__subtitle {
-  max-width: 220px;
+  color: #FFFFFF;
+  margin: 0 0 9px;
   overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: #FFFFFF;
-  margin: 0 0 9px;
   font-size: 13px;
   font-weight: 500;
   line-height: normal;

@@ -1,108 +1,86 @@
-class ApiMain {
-  constructor(options) {
-    this._url = options.baseUrl;
-  }
+import { PATH_NAME, BASE_URL_MAIN, BASE_URL_BEATFILM } from "./constants";
+import { checkResponse } from "./utils";
 
-  _checkResponse(res) { return res.ok ? res.json() : Promise.reject(res.status) }
+const { AUTORIZATION, REGISTRATION, MOVIES, USER } = PATH_NAME;
 
-  _request(url, options) {
-    return fetch(`${this._url}${url}`, options)
-      .then(this._checkResponse)
-  }
+export const getMovies = () => {
+  return fetch(`${BASE_URL_MAIN}${MOVIES}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.jwt}`,
+    },
+  }).then(checkResponse);
+};
 
-  registration(username, email, password) {
-    return this._request('/signup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name: username,
-        email: email,
-        password: password
-      })
-    })
-  }
+export const addMovies = (data) => {
+  return fetch(`${BASE_URL_MAIN}${MOVIES}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.jwt}`,
+    },
+    body: JSON.stringify({
+      country: data.country,
+      director: data.director,
+      duration: data.duration,
+      description: data.description,
+      year: data.year,
+      image: BASE_URL_BEATFILM + data.image.url,
+      trailerLink: data.trailerLink,
+      thumbnail: BASE_URL_BEATFILM +  data.image.formats.thumbnail.url,
+      movieId: data.id,
+      nameRU: data.nameRU,
+      nameEN: data.nameEN,
+    }),
+  }).then(checkResponse);
+};
 
-  authorization(email, password) {
-    return this._request('/signin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
-    })
-  }
+export const deleteMovies = (id) => {
+  return fetch(`${BASE_URL_MAIN}${MOVIES}/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.jwt}`,
+    },
+  }).then(checkResponse);
+};
 
-  getUserData(token) {
-    return this._request('/users/me', {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    })
-  }
+export const registration = ({ username, email, password }) => {
+  return fetch(`${BASE_URL_MAIN}${REGISTRATION}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name: username, email, password }),
+  }).then(checkResponse);
+};
 
+export const authorization = ({ email, password }) => {
+  return fetch(`${BASE_URL_MAIN}${AUTORIZATION}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  }).then(checkResponse);
+};
 
-  setUserInfo(username, email, token) {
-    return this._request('/users/me', {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        name: username,
-        email: email,
-      })
-    })
-  }
+export const checkToken = () => {
+  return fetch(`${BASE_URL_MAIN}${USER}`, {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.jwt}`,
+    },
+  }).then(checkResponse);
+};
 
-  getMovies(token) {
-    return this._request('/movies', {
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    })
-  }
-
-  addMovie(data, token) {
-    return this._request('/movies', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        "Authorization": `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        country: data.country,
-        director: data.director,
-        duration: data.duration,
-        description: data.description,
-        year: data.year,
-        image: `https://api.nomoreparties.co${data.image.url}`,
-        trailerLink: data.trailerLink,
-        thumbnail: `https://api.nomoreparties.co${data.image.formats.thumbnail.url}`,
-        movieId: data.id,
-        nameRU: data.nameRU,
-        nameEN: data.nameEN
-      })
-    })
-  }
-
-  deleteMovie(cardId, token) {
-    return this._request(`/movies/${cardId}`, {
-      method: 'DELETE',
-      headers: {
-        "Authorization": `Bearer ${token}`
-      }
-    })
-  }
-}
-
-const apiMain = new ApiMain({
-  baseUrl: 'https://api.anti1hero1-diplom.nomoredomainsrocks.ru',
-});
-
-export default apiMain
+export const setUserInfo = ({ username, email }) => {
+  return fetch(`${BASE_URL_MAIN}${USER}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.jwt}`,
+    },
+    body: JSON.stringify({ name: username, email }),
+  }).then(checkResponse);
+};

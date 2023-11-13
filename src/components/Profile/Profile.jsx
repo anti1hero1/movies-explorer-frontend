@@ -3,50 +3,33 @@ import Form from "../Form/Form";
 import "./Profile.css";
 import Input from "../Input/Input";
 import useFormValidation from "../../hooks/useFormValidation";
-import { useEffect } from "react";
-import { useContext } from "react";
-import CurrentUserContext from "../../contexts/CurrentUserContext";
-import { EmailRegex } from "../../utils/constants";
+import { useContext, useEffect } from "react";
+import { CurrentUserContext } from "../../context/CurrentUserContex";
 
-export default function Profile({
-  name,
-  logOut,
-  editUserData,
-  setIsError,
-  isSuccess,
-  setSuccess,
-  setIsEdit,
-  isEdit,
-}) {
-  const currentUser = useContext(CurrentUserContext);
+export default function Profile({ name, signOut }) {
   const { values, errors, isInputValid, isValid, handleChange, reset } =
     useFormValidation();
+  const currentUser = useContext(CurrentUserContext);
 
   useEffect(() => {
     reset({ username: currentUser.name, email: currentUser.email });
-  }, [reset, currentUser, isEdit]);
-
-  function onSubmit(evt) {
+  }, [reset]);
+console.log(currentUser);
+  function onEdit(evt) {
     evt.preventDefault();
-    editUserData(values.username, values.email);
+
+  }
+
+  function outLogin() {
+    signOut();
   }
 
   return (
     <section className="profile page__profile">
       <h2 className="profile__title">{`Привет, ${currentUser.name}!`}</h2>
-      <Form
-        name={name}
-        isValid={isValid}
-        onSubmit={onSubmit}
-        setIsError={setIsError}
-        values={values}
-        isSuccess={isSuccess}
-        setSuccess={setSuccess}
-        setIsEdit={setIsEdit}
-        isEdit={isEdit}
-      >
+      <Form name={name} isValid={isValid} onSubmit={onEdit}>
         <Input
-          typeofname={name}
+          selectname={name}
           name="username"
           type="text"
           title="Имя"
@@ -55,10 +38,9 @@ export default function Profile({
           isInputValid={isInputValid.username}
           error={errors.username}
           onChange={handleChange}
-          isEdit={isEdit}
         />
         <Input
-          typeofname={name}
+          selectname={name}
           name="email"
           type="email"
           title="E-mail"
@@ -66,11 +48,9 @@ export default function Profile({
           isInputValid={isInputValid.email}
           error={errors.email}
           onChange={handleChange}
-          pattern={EmailRegex}
-          isEdit={isEdit}
         />
       </Form>
-      <Link to="/" onClick={logOut} className="profile__link">
+      <Link to={"/"} onClick={outLogin} className="profile__link">
         Выйти из аккаунта
       </Link>
     </section>

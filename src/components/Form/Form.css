@@ -89,12 +89,7 @@
   }
 }
 
-.profile__error-request_type_error {
-  visibility: visible;
-}
-
-.profile__error-request_type_success {
-  color: #8B8B8B;
+.profile__error-request_active {
   visibility: visible;
 }
 
@@ -112,11 +107,6 @@
   line-height: normal;
   cursor: pointer;
   transition: opacity .5s linear;
-}
-
-.profile__submit_disabled {
-  color: #8B8B8B;
-  pointer-events: none;
 }
 
 @media screen and (max-width: 525px) {

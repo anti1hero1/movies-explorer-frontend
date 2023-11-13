@@ -8,23 +8,19 @@ import Login from "../Login/Login";
 import Register from "../Register/Register";
 import Error from "../Error/Error";
 import Profile from "../Profile/Profile";
-import SavedMovies from "../SavedMovies/SavedMovies";
-import Movies from "../Movies/Movies";
+import SearchForm from "../SearchForm/SearchForm";
+import MoviesCardList from "../MoviesCardList/MoviesCardList";
 
 export default function Main({
   name,
-  onRegister,
-  onLogin,
-  logOut,
-  editUserData,
-  setIsError,
-  savedMovies,
-  onDelete,
-  addMovie,
-  isSuccess,
-  setSuccess,
-  setIsEdit,
-  isEdit,
+  setLoggedIn,
+  moviesAll,
+  saveMovie,
+  handleLogin,
+  handleRegister,
+  handleLikeMovies,
+  handleDelete,
+  signOut,
 }) {
   return (
     <main className="main">
@@ -40,44 +36,37 @@ export default function Main({
             </>
           ),
           signin: (
-            <Login name={name} onLogin={onLogin} setIsError={setIsError} />
+            <Login
+              name={name}
+              setLoggedIn={setLoggedIn}
+              handleLogin={handleLogin}
+            />
           ),
           signup: (
             <Register
               name={name}
-              onRegister={onRegister}
-              setIsError={setIsError}
+              setLoggedIn={setLoggedIn}
+              handleRegister={handleRegister}
             />
           ),
           error: <Error />,
           profile: (
-            <Profile
-              name={name}
-              logOut={logOut}
-              editUserData={editUserData}
-              setIsError={setIsError}
-              isSuccess={isSuccess}
-              setSuccess={setSuccess}
-              setIsEdit={setIsEdit}
-              isEdit={isEdit}
-            />
+            <Profile name={name} setLoggedIn={setLoggedIn} signOut={signOut} />
           ),
           movies: (
             <>
-              <Movies
-                savedMovies={savedMovies}
-                addMovie={addMovie}
-                setIsError={setIsError}
+              <SearchForm isCheck={() => {}} changeShot={() => {}} />
+              <MoviesCardList
+                movies={moviesAll}
+                handleLikeMovies={handleLikeMovies}
+                saveMovie={saveMovie}
               />
             </>
           ),
           savedmovies: (
             <>
-              <SavedMovies
-                savedMovies={savedMovies}
-                onDelete={onDelete}
-                setIsError={setIsError}
-              />
+              <SearchForm isCheck={() => {}} changeShot={() => {}} />
+              <MoviesCardList movies={saveMovie} handleDelete={handleDelete} />
             </>
           ),
         }[name]

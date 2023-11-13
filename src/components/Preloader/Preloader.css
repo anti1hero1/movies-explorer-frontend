@@ -94,36 +94,24 @@
   width: 40px;
   height: 40px;
 }
-.preloader__container_type_button-small {
-  width: 16px;
-  height: 16px;
-}
+
 .preloader__round_type_button {
-  background: #4285F4;
+  background: white;
   width: 40px;
   height: 40px;
 }
 
-.preloader__round_type_button::after {
-  background: lightgray;
-  width: 40px;
-  height: 40px;
-}
-
+.preloader__round_type_button::after,
 .preloader__round_type_button::before {
-  background: #4285F4;
   width: 40px;
   height: 40px;
 }
 
-.preloader__round_type_button-small {
-  background: #202020;
-  width: 16px;
-  height: 16px;
+.preloader__round::after {
+  background: black;
+  animation: preloader-inside-white 1s ease-in-out infinite;
 }
 
-.preloader__round_type_button-small::after,
-.preloader__round_type_button-small::before {
-  width: 16px;
-  height: 16px;
+.preloader__round::before {
+  background: white;
 }

@@ -215,7 +215,7 @@
   }
 }
 
-.header__link_type_profile {
+.header__link_type_acc {
   align-self: flex-end;
   display: flex;
   align-items: center;
@@ -223,7 +223,7 @@
 }
 
 @media screen and (max-width: 768px) {
-  .header__link_type_profile {
+  .header__link_type_acc {
     font-size: 13px;
     font-weight: 500;
     line-height: 12px;
