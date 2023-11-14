@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { EMAIL_REGEX, NAME_REGEX } from "../utils/constants";
 
 export default function useFormValidation() {
   const [values, setValues] = useState({});
@@ -16,13 +17,41 @@ export default function useFormValidation() {
       return { ...oldValues, [name]: value };
     });
     setErrors((oldErrors) => {
-      return { ...oldErrors, [name]: validationMessage };
+      if (name === "email" && !EMAIL_REGEX.test(value)) {
+        return {
+          ...oldErrors,
+          [name]: "Пожалуйста, введите адрес электронной почты.",
+        };
+      } else if (name === "username" && !NAME_REGEX.test(value)) {
+        return {
+          ...oldErrors,
+          [name]: "Cодержит только латиницу, кириллицу, пробел или дефис",
+        };
+      } else {
+        return { ...oldErrors, [name]: validationMessage };
+      }
     });
     setIsInputValid((oldValid) => {
-      return { ...oldValid, [name]: valid };
+      if (
+        (name === "email" && !EMAIL_REGEX.test(value)) ||
+        (name === "username" && !NAME_REGEX.test(value))
+      ) {
+        return { ...oldValid, [name]: false };
+      } else {
+        return { ...oldValid, [name]: valid };
+      }
     });
+
     setIsValid(form.checkValidity());
   }
+
+  useEffect(() => {
+    if (isValid && !Object.values(isInputValid).includes(false)) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  }, [isInputValid]);
 
   const setValue = useCallback((name, value) => {
     setValues((oldValues) => {

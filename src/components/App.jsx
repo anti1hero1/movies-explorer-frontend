@@ -1,4 +1,4 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import "./App.css";
 import Header from "./Header/Header";
 import Main from "./Main/Main";
@@ -8,87 +8,103 @@ import { getMoviesApi } from "../utils/MoviesApi";
 import * as api from "../utils/MainApi";
 import { PATH_NAME } from "../utils/constants";
 import { CurrentUserContext } from "../context/CurrentUserContex";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(localStorage.loggedIn ?? false);
+  const [loggedIn, setLoggedIn] = useState(
+    Boolean(localStorage.loggedIn) ?? false
+  );
   const [moviesAll, setMoviesAll] = useState([]);
   const [saveMovie, setSaveMovie] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+  const [isSending, setSending] = useState(false);
+  const [isError, setError] = useState(false);
+  const [isEditActive, setEditActive] = useState(false);
+
+  const {
+    HOME,
+    AUTORIZATION,
+    REGISTRATION,
+    PROFILE,
+    MOVIES,
+    SAVE,
+    OTHER,
+    ERROR,
+  } = PATH_NAME;
 
   const navigate = useNavigate();
 
-  const getAllMovies = () => {
+  function getAllMovies() {
     getMoviesApi()
       .then((res) => {
         setMoviesAll(res);
       })
       .catch();
-  };
+  }
 
-  const handleRegister = (value) => {
+  function handleRegister(value) {
+    setSending(true);
     api
       .registration(value)
       .then(() => {
+        setError(false);
         handleLogin(value);
       })
-      .catch();
-  };
+      .catch((err) => {
+        setError(true);
+        console.log(err);
+      })
+      .finally(setSending(false));
+  }
 
-  const handleLogin = (value) => {
+  function handleLogin(value) {
+    setSending(true);
     api
       .authorization(value)
       .then(({ token }) => {
-        navigate(PATH_NAME.MOVIES, { replace: true });
+        setError(false);
+        navigate(`/${MOVIES}`, { replace: true });
         setLoggedIn(true);
         localStorage.loggedIn = true;
         localStorage.jwt = token;
         console.log(token);
       })
-      .catch();
-  };
+      .catch((err) => {
+        setError(true);
+        console.log(err);
+      })
+      .finally(setSending(false));
+  }
 
-  const signOut = () => {
+  function signOut() {
+    navigate("/", { replace: true });
     setLoggedIn(false);
     localStorage.clear();
-    localStorage.loggedIn = false;
-  };
+  }
 
-  // const checkToken = () => {
-  //   api
-  //     .checkToken()
-  //     .then((user) => {
-  //       setCurrentUser({
-  //         name: user.name,
-  //         email: user.email,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       signOut();
-  //       console.log(err);
-  //     });
-  // };
-
-  const checkToken = async () => {
-    try {
-      const user = await api.checkToken();
-      setCurrentUser({
-        name: user.name,
-        email: user.email,
+  function checkToken() {
+    api
+      .checkToken()
+      .then((user) => {
+        setCurrentUser({
+          name: user.name,
+          email: user.email,
+        });
+      })
+      .catch((err) => {
+        signOut();
+        console.log(err);
       });
-    } catch (err) {
-      signOut();
-      console.log(err);
-    }
-  };
+  }
 
-  const getSavedMovies = () => {
+  function getSavedMovies() {
     api
       .getMovies()
       .then((data) => setSaveMovie(data))
       .catch();
-  };
+  }
 
-  const handleLikeMovies = (movie) => {
+  function handleLikeMovies(movie) {
     if (!saveMovie.some((item) => item.movieId === movie.id)) {
       api
         .addMovies(movie)
@@ -103,9 +119,9 @@ function App() {
         )
         .catch();
     }
-  };
+  }
 
-  const handleDelete = (movie) => {
+  function handleDelete(movie) {
     api
       .deleteMovies(movie._id)
       .then(() =>
@@ -114,11 +130,29 @@ function App() {
         )
       )
       .catch();
-  };
+  }
+
+  function handleEditProfile(values) {
+    setSending(true);
+    api
+      .setUserInfo(values)
+      .then((user) => {
+        setError(false);
+        setCurrentUser({ name: user.name, email: user.email });
+        setEditActive(false);
+      })
+      .catch((err) => {
+        setError(true);
+        console.log(err);
+      })
+      .finally(setSending(false));
+  }
 
   useEffect(() => {
-    checkToken();
-    getSavedMovies();
+    if (localStorage.loggedIn) {
+      checkToken();
+      getSavedMovies();
+    }
   }, [loggedIn]);
 
   useEffect(() => {
@@ -130,24 +164,34 @@ function App() {
       <div className="page__container">
         <Routes>
           <Route
-            path="/signin"
+            path={`/${AUTORIZATION}`}
             element={
-              <Main
-                name="signin"
-                setLoggedIn={setLoggedIn}
-                handleLogin={handleLogin}
-              />
+              loggedIn ? (
+                <Navigate to={`/${MOVIES}`} replace />
+              ) : (
+                <Main
+                  name={AUTORIZATION}
+                  setLoggedIn={setLoggedIn}
+                  handleLogin={handleLogin}
+                  isError={isError}
+                />
+              )
             }
           />
 
           <Route
-            path="/signup"
+            path={`/${REGISTRATION}`}
             element={
-              <Main
-                name="signup"
-                setLoggedIn={setLoggedIn}
-                handleRegister={handleRegister}
-              />
+              loggedIn ? (
+                <Navigate to={`/${MOVIES}`} replace />
+              ) : (
+                <Main
+                  name={REGISTRATION}
+                  setLoggedIn={setLoggedIn}
+                  handleRegister={handleRegister}
+                  isError={isError}
+                />
+              )
             }
           />
 
@@ -155,23 +199,25 @@ function App() {
             path="/"
             element={
               <>
-                <Header name="home" loggedIn={loggedIn} />
-                <Main name="home" />
+                <Header name={HOME} loggedIn={loggedIn} />
+                <Main name={HOME} />
                 <Footer />
               </>
             }
           />
 
           <Route
-            path="/movies"
+            path={`/${MOVIES}`}
             element={
               <>
-                <Header />
-                <Main
-                  name="movies"
+                <Header loggedIn={loggedIn} />
+                <ProtectedRoute
+                  element={Main}
+                  name={MOVIES}
                   moviesAll={moviesAll}
                   saveMovie={saveMovie}
                   handleLikeMovies={handleLikeMovies}
+                  loggedIn={loggedIn}
                 />
                 <Footer />
               </>
@@ -179,14 +225,16 @@ function App() {
           />
 
           <Route
-            path="/saved-movies"
+            path={`/${SAVE}`}
             element={
               <>
-                <Header />
-                <Main
-                  name="savedmovies"
+                <Header loggedIn={loggedIn} />
+                <ProtectedRoute
+                  element={Main}
+                  name={SAVE}
                   saveMovie={saveMovie}
                   handleDelete={handleDelete}
+                  loggedIn={loggedIn}
                 />
                 <Footer />
               </>
@@ -194,24 +242,31 @@ function App() {
           />
 
           <Route
-            path="/profile"
+            path={`/${PROFILE}`}
             element={
               <>
-                <Header />
-                <Main
-                  name="profile"
+                <Header loggedIn={loggedIn} />
+                <ProtectedRoute
+                  element={Main}
+                  name={PROFILE}
+                  loggedIn={loggedIn}
                   setLoggedIn={setLoggedIn}
                   signOut={signOut}
+                  isSending={isSending}
+                  handleEditProfile={handleEditProfile}
+                  isError={isError}
+                  isEditActive={isEditActive}
+                  setEditActive={setEditActive}
                 />
               </>
             }
           />
 
           <Route
-            path="*"
+            path={OTHER}
             element={
               <>
-                <Main name="error" />
+                <Main name={ERROR} />
               </>
             }
           />

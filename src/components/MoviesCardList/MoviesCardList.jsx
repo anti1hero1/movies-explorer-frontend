@@ -11,11 +11,14 @@ export default function MoviesCardList({
   const [count, setCount] = useState(printCards().init);
   const fact = movies.slice(0, count);
 
-  console.log(fact);
 
   function printCards() {
     const counter = { init: 16, step: 4 };
-    if (window.innerWidth < 1023) {
+    if (window.innerWidth < 1280) {
+      counter.init = 12;
+      counter.step = 3;
+    }
+    if (window.innerWidth < 1024) {
       counter.init = 8;
       counter.step = 2;
     }

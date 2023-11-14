@@ -13,12 +13,12 @@ export default function MoviesCard({
   const { pathname } = useLocation();
   const { nameRU, image, trailerLink, duration } = data;
   const isLiked =
-    pathname === PATH_NAME.MOVIES
+    pathname === `/${PATH_NAME.MOVIES}`
       ? saveMovie.some((item) => item.movieId === data.id)
       : false;
 
   function onClick() {
-    if (pathname === PATH_NAME.MOVIES) {
+    if (pathname === `/${PATH_NAME.MOVIES}`) {
       handleLikeMovies(data);
     } else {
       handleDelete(data);
@@ -30,7 +30,7 @@ export default function MoviesCard({
         <Link to={trailerLink} target="_blank">
           <img
             src={
-              pathname === PATH_NAME.MOVIES
+              pathname === `/${PATH_NAME.MOVIES}`
                 ? getUrlImage(image.url)
                 : data.image
             }
@@ -43,7 +43,7 @@ export default function MoviesCard({
             <p className="gallery__subtitle">{nameRU}</p>
             <span className="gallery__duration">{getDuration(duration)}</span>
           </div>
-          {pathname === PATH_NAME.MOVIES ? (
+          {pathname === `/${PATH_NAME.MOVIES}` ? (
             <button
               type="button"
               className={`gallery__save ${

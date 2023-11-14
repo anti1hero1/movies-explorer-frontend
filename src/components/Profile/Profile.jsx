@@ -6,28 +6,51 @@ import useFormValidation from "../../hooks/useFormValidation";
 import { useContext, useEffect } from "react";
 import { CurrentUserContext } from "../../context/CurrentUserContex";
 
-export default function Profile({ name, signOut }) {
+export default function Profile({
+  name,
+  signOut,
+  isSending,
+  handleEditProfile,
+  isError,
+  isEditActive,
+  setEditActive,
+}) {
   const { values, errors, isInputValid, isValid, handleChange, reset } =
     useFormValidation();
   const currentUser = useContext(CurrentUserContext);
 
   useEffect(() => {
     reset({ username: currentUser.name, email: currentUser.email });
-  }, [reset]);
-console.log(currentUser);
-  function onEdit(evt) {
-    evt.preventDefault();
-
-  }
+  }, [reset, currentUser]);
 
   function outLogin() {
     signOut();
   }
 
+  function handleEdit() {
+    setEditActive(true);
+  }
+
+  function handleSubmit(evt) {
+    evt.preventDefault();
+    handleEditProfile(values);
+  }
+
   return (
     <section className="profile page__profile">
       <h2 className="profile__title">{`Привет, ${currentUser.name}!`}</h2>
-      <Form name={name} isValid={isValid} onSubmit={onEdit}>
+      <Form
+        name={name}
+        isValid={isValid}
+        onSubmit={handleSubmit}
+        isEditActive={isEditActive}
+        isSending={isSending}
+        isChanged={
+          values.username === currentUser.name &&
+          values.email === currentUser.email
+        }
+        isError={isError}
+      >
         <Input
           selectname={name}
           name="username"
@@ -38,6 +61,7 @@ console.log(currentUser);
           isInputValid={isInputValid.username}
           error={errors.username}
           onChange={handleChange}
+          isEditActive={isEditActive}
         />
         <Input
           selectname={name}
@@ -48,11 +72,23 @@ console.log(currentUser);
           isInputValid={isInputValid.email}
           error={errors.email}
           onChange={handleChange}
+          isEditActive={isEditActive}
         />
       </Form>
-      <Link to={"/"} onClick={outLogin} className="profile__link">
-        Выйти из аккаунта
-      </Link>
+      {!isEditActive && (
+        <>
+          <button
+            type="button"
+            className="profile__submit"
+            onClick={handleEdit}
+          >
+            {"Редактировать"}
+          </button>
+          <Link to={"/"} onClick={outLogin} className="profile__link">
+            Выйти из аккаунта
+          </Link>
+        </>
+      )}
     </section>
   );
 }

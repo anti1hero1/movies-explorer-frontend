@@ -3,8 +3,8 @@ import { checkResponse } from "./utils";
 
 const { AUTORIZATION, REGISTRATION, MOVIES, USER } = PATH_NAME;
 
-export const getMovies = () => {
-  return fetch(`${BASE_URL_MAIN}${MOVIES}`, {
+export function getMovies() {
+  return fetch(`${BASE_URL_MAIN}/${MOVIES}`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.jwt}`,
@@ -12,8 +12,8 @@ export const getMovies = () => {
   }).then(checkResponse);
 };
 
-export const addMovies = (data) => {
-  return fetch(`${BASE_URL_MAIN}${MOVIES}`, {
+export function addMovies(data) {
+  return fetch(`${BASE_URL_MAIN}/${MOVIES}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -27,55 +27,55 @@ export const addMovies = (data) => {
       year: data.year,
       image: BASE_URL_BEATFILM + data.image.url,
       trailerLink: data.trailerLink,
-      thumbnail: BASE_URL_BEATFILM +  data.image.formats.thumbnail.url,
+      thumbnail: BASE_URL_BEATFILM + data.image.formats.thumbnail.url,
       movieId: data.id,
       nameRU: data.nameRU,
       nameEN: data.nameEN,
     }),
   }).then(checkResponse);
-};
+}
 
-export const deleteMovies = (id) => {
-  return fetch(`${BASE_URL_MAIN}${MOVIES}/${id}`, {
+export function deleteMovies(id) {
+  return fetch(`${BASE_URL_MAIN}/${MOVIES}/${id}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.jwt}`,
     },
   }).then(checkResponse);
-};
+}
 
-export const registration = ({ username, email, password }) => {
-  return fetch(`${BASE_URL_MAIN}${REGISTRATION}`, {
+export function registration({ username, email, password }) {
+  return fetch(`${BASE_URL_MAIN}/${REGISTRATION}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ name: username, email, password }),
   }).then(checkResponse);
-};
+}
 
-export const authorization = ({ email, password }) => {
-  return fetch(`${BASE_URL_MAIN}${AUTORIZATION}`, {
+export function authorization({ email, password }) {
+  return fetch(`${BASE_URL_MAIN}/${AUTORIZATION}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ email, password }),
   }).then(checkResponse);
-};
+}
 
-export const checkToken = () => {
-  return fetch(`${BASE_URL_MAIN}${USER}`, {
+export function checkToken() {
+  return fetch(`${BASE_URL_MAIN}/${USER}`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.jwt}`,
     },
   }).then(checkResponse);
-};
+}
 
-export const setUserInfo = ({ username, email }) => {
-  return fetch(`${BASE_URL_MAIN}${USER}`, {
+export function setUserInfo({ username, email }) {
+  return fetch(`${BASE_URL_MAIN}/${USER}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -83,4 +83,4 @@ export const setUserInfo = ({ username, email }) => {
     },
     body: JSON.stringify({ name: username, email }),
   }).then(checkResponse);
-};
+}

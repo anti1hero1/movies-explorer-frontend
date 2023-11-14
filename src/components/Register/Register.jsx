@@ -2,7 +2,7 @@ import Input from "../Input/Input";
 import SectionLogin from "../SectionLogin/SectionLogin";
 import useFormValidation from "../../hooks/useFormValidation";
 
-export default function Login({ name, setLoggedIn, handleRegister }) {
+export default function Login({ name, handleRegister,isError }) {
   const { values, errors, isInputValid, isValid, handleChange } =
     useFormValidation();
 
@@ -12,7 +12,7 @@ export default function Login({ name, setLoggedIn, handleRegister }) {
   }
 
   return (
-    <SectionLogin name={name} isValid={isValid} onSubmit={onRegister}>
+    <SectionLogin name={name} isValid={isValid} onSubmit={onRegister} isError={isError}>
       <Input
         name="username"
         type="text"

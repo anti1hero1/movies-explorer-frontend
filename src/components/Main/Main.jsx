@@ -21,6 +21,11 @@ export default function Main({
   handleLikeMovies,
   handleDelete,
   signOut,
+  isSending,
+  handleEditProfile,
+  isError,
+  isEditActive,
+  setEditActive,
 }) {
   return (
     <main className="main">
@@ -40,6 +45,7 @@ export default function Main({
               name={name}
               setLoggedIn={setLoggedIn}
               handleLogin={handleLogin}
+              isError={isError}
             />
           ),
           signup: (
@@ -47,11 +53,21 @@ export default function Main({
               name={name}
               setLoggedIn={setLoggedIn}
               handleRegister={handleRegister}
+              isError={isError}
             />
           ),
           error: <Error />,
           profile: (
-            <Profile name={name} setLoggedIn={setLoggedIn} signOut={signOut} />
+            <Profile
+              name={name}
+              setLoggedIn={setLoggedIn}
+              signOut={signOut}
+              isSending={isSending}
+              handleEditProfile={handleEditProfile}
+              isError={isError}
+              isEditActive={isEditActive}
+              setEditActive={setEditActive}
+            />
           ),
           movies: (
             <>
@@ -63,7 +79,7 @@ export default function Main({
               />
             </>
           ),
-          savedmovies: (
+          'saved-movies': (
             <>
               <SearchForm isCheck={() => {}} changeShot={() => {}} />
               <MoviesCardList movies={saveMovie} handleDelete={handleDelete} />
