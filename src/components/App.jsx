@@ -4,21 +4,20 @@ import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
 import { useEffect, useState } from "react";
-import { getMoviesApi } from "../utils/MoviesApi";
 import * as api from "../utils/MainApi";
 import { PATH_NAME } from "../utils/constants";
 import { CurrentUserContext } from "../context/CurrentUserContex";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "./ProtectedRoute/ProtectedRoute";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(
     Boolean(localStorage.loggedIn) ?? false
   );
-  const [moviesAll, setMoviesAll] = useState([]);
   const [saveMovie, setSaveMovie] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
   const [isSending, setSending] = useState(false);
   const [isError, setError] = useState(false);
+  const [isSuccess, setSuccess] = useState(false);
   const [isEditActive, setEditActive] = useState(false);
 
   const {
@@ -33,15 +32,6 @@ function App() {
   } = PATH_NAME;
 
   const navigate = useNavigate();
-
-  function getAllMovies() {
-    getMoviesApi()
-      .then((res) => {
-        setMoviesAll(res);
-      })
-      .catch();
-  }
-
   function handleRegister(value) {
     setSending(true);
     api
@@ -67,7 +57,6 @@ function App() {
         setLoggedIn(true);
         localStorage.loggedIn = true;
         localStorage.jwt = token;
-        console.log(token);
       })
       .catch((err) => {
         setError(true);
@@ -101,7 +90,7 @@ function App() {
     api
       .getMovies()
       .then((data) => setSaveMovie(data))
-      .catch();
+      .catch((err) => console.log(err));
   }
 
   function handleLikeMovies(movie) {
@@ -109,7 +98,7 @@ function App() {
       api
         .addMovies(movie)
         .then((res) => setSaveMovie((movie) => [...movie, res]))
-        .catch();
+        .catch((err) => console.log(err));
     } else {
       const id = saveMovie.find((item) => item.movieId === movie.id)._id;
       api
@@ -117,7 +106,7 @@ function App() {
         .then(() =>
           setSaveMovie((movies) => movies.filter((item) => item._id !== id))
         )
-        .catch();
+        .catch((err) => console.log(err));
     }
   }
 
@@ -129,8 +118,14 @@ function App() {
           movies.filter((item) => item._id !== movie._id)
         )
       )
-      .catch();
+      .catch((err) => console.log(err));
   }
+
+  useEffect(() => {
+    setError(false);
+    setSuccess(false);
+    setEditActive(false);
+  }, [navigate]);
 
   function handleEditProfile(values) {
     setSending(true);
@@ -138,6 +133,7 @@ function App() {
       .setUserInfo(values)
       .then((user) => {
         setError(false);
+        setSuccess(true);
         setCurrentUser({ name: user.name, email: user.email });
         setEditActive(false);
       })
@@ -154,10 +150,6 @@ function App() {
       getSavedMovies();
     }
   }, [loggedIn]);
-
-  useEffect(() => {
-    getAllMovies();
-  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
@@ -214,7 +206,6 @@ function App() {
                 <ProtectedRoute
                   element={Main}
                   name={MOVIES}
-                  moviesAll={moviesAll}
                   saveMovie={saveMovie}
                   handleLikeMovies={handleLikeMovies}
                   loggedIn={loggedIn}
@@ -257,6 +248,8 @@ function App() {
                   isError={isError}
                   isEditActive={isEditActive}
                   setEditActive={setEditActive}
+                  isSuccess={isSuccess}
+                  setSuccess={setSuccess}
                 />
               </>
             }

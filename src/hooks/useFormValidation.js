@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import { EMAIL_REGEX, NAME_REGEX } from "../utils/constants";
+import { EMAIL_REGEX, MESSAGE, NAME_REGEX } from "../utils/constants";
 
 export default function useFormValidation() {
   const [values, setValues] = useState({});
   const [errors, setErrors] = useState({});
   const [isInputValid, setIsInputValid] = useState({});
   const [isValid, setIsValid] = useState(false);
+  const { ERROR_NAME, ERROR_EMAIL } = MESSAGE;
 
   function handleChange(evt) {
     const name = evt.target.name;
@@ -13,6 +14,7 @@ export default function useFormValidation() {
     const validationMessage = evt.target.validationMessage;
     const valid = evt.target.validity.valid;
     const form = evt.target.form;
+
     setValues((oldValues) => {
       return { ...oldValues, [name]: value };
     });
@@ -20,12 +22,12 @@ export default function useFormValidation() {
       if (name === "email" && !EMAIL_REGEX.test(value)) {
         return {
           ...oldErrors,
-          [name]: "Пожалуйста, введите адрес электронной почты.",
+          [name]: ERROR_EMAIL,
         };
       } else if (name === "username" && !NAME_REGEX.test(value)) {
         return {
           ...oldErrors,
-          [name]: "Cодержит только латиницу, кириллицу, пробел или дефис",
+          [name]: ERROR_NAME,
         };
       } else {
         return { ...oldErrors, [name]: validationMessage };

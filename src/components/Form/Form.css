@@ -65,8 +65,7 @@
   }
 }
 
-.profile__error-request {
-  color: #FF004C;
+.message {
   visibility: hidden;
   display: block;
   margin: 166px 0 0 0;
@@ -75,6 +74,13 @@
   font-size: 11px;
   font-weight: 400;
   line-height: normal;
+}
+
+.profile__error-request {
+  color: #FF004C;
+}
+.profile__success-request {
+  color: #3DDC84;
 }
 
 @media screen and (max-width: 768px) {
@@ -89,7 +95,7 @@
   }
 }
 
-.profile__error-request_active {
+.message_active {
   visibility: visible;
 }
 

@@ -28,7 +28,11 @@ export default function AboutMe() {
               Github
             </Link>
           </div>
-          <img src={photo} alt="Фото исполнителя проэкта" className="aboutme__image" />
+          <img
+            src={photo}
+            alt="Фото исполнителя проэкта"
+            className="aboutme__image"
+          />
         </div>
       </Wrapper>
     </section>

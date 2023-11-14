@@ -8,13 +8,12 @@ import Login from "../Login/Login";
 import Register from "../Register/Register";
 import Error from "../Error/Error";
 import Profile from "../Profile/Profile";
-import SearchForm from "../SearchForm/SearchForm";
-import MoviesCardList from "../MoviesCardList/MoviesCardList";
+import Movies from "../Movies/Movies";
+import SavedMovies from "../SavedMovies/SavedMovies";
 
 export default function Main({
   name,
   setLoggedIn,
-  moviesAll,
   saveMovie,
   handleLogin,
   handleRegister,
@@ -26,6 +25,8 @@ export default function Main({
   isError,
   isEditActive,
   setEditActive,
+  isSuccess,
+  setSuccess,
 }) {
   return (
     <main className="main">
@@ -67,23 +68,23 @@ export default function Main({
               isError={isError}
               isEditActive={isEditActive}
               setEditActive={setEditActive}
+              isSuccess={isSuccess}
+              setSuccess={setSuccess}
             />
           ),
           movies: (
-            <>
-              <SearchForm isCheck={() => {}} changeShot={() => {}} />
-              <MoviesCardList
-                movies={moviesAll}
-                handleLikeMovies={handleLikeMovies}
-                saveMovie={saveMovie}
-              />
-            </>
+            <Movies
+              handleLikeMovies={handleLikeMovies}
+              saveMovie={saveMovie}
+              name={name}
+            />
           ),
-          'saved-movies': (
-            <>
-              <SearchForm isCheck={() => {}} changeShot={() => {}} />
-              <MoviesCardList movies={saveMovie} handleDelete={handleDelete} />
-            </>
+          "saved-movies": (
+            <SavedMovies
+              handleDelete={handleDelete}
+              saveMovie={saveMovie}
+              name={name}
+            />
           ),
         }[name]
       }

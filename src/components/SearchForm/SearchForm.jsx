@@ -1,20 +1,39 @@
-import { useState } from 'react'
-import useFormValidation from '../../hooks/useFormValidation'
-import FilterCheckbox from '../FilterCheckbox/FilterCheckbox'
-import './SearchForm.css'
+import { useState } from "react";
+import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
+import "./SearchForm.css";
+import { MESSAGE, PATH_NAME } from "../../utils/constants";
 
-export default function SearchForm({ isCheck, changeShot }) {
-  const [isError,setIsError] = useState(false)
-  const {values, isValid, handleChange} = useFormValidation()
+export default function SearchForm({
+  handldeSearch,
+  values,
+  setValues,
+  name,
+}) {
+  const [isError, setIsError] = useState(false);
 
   function onSubmit(evt) {
-    evt.preventDefault()
-    if (!isValid) {
-      setIsError(true)
-      return
+    evt.preventDefault();
+    if (name === PATH_NAME.MOVIES && values.search.length === 0) {
+      setIsError(true);
+      return;
     } else {
-      setIsError(false)
+      handldeSearch();
+      setIsError(false);
     }
+  }
+
+  function handleChange(evt) {
+    const name = evt.target.name;
+    const value = evt.target.value;
+    const checked = evt.target.checked;
+    const type = evt.target.type;
+
+    setValues((oldValues) => {
+      if (type === "checkbox") {
+        return { ...oldValues, [name]: checked };
+      }
+      return { ...oldValues, [name]: value };
+    });
   }
 
   return (
@@ -24,22 +43,26 @@ export default function SearchForm({ isCheck, changeShot }) {
           noValidate
           className="search__form"
           name={"SearchForm"}
-          value={values.search}
           onSubmit={onSubmit}
+          id="SearchForm"
         >
           <input
-            type="text"
+            name="search"
+            type="search"
             placeholder="Фильм"
             className="search__input"
+            value={values.search}
             required
             onChange={handleChange}
           />
-          <button className="search__submit"></button>
+          <button className="search__submit" />
         </form>
-        <span className={`search__error ${isError && "search__error_active"}`}>
-          {isError ? "Введите ключевое слово" : ""}
+        <span
+          className={`search__error ${isError ? "search__error_active" : ""}`}
+        >
+          {isError ? MESSAGE.ERROR_EMPTY_STRING : ""}
         </span>
-        <FilterCheckbox isCheck={isCheck} changeShot={changeShot} />
+        <FilterCheckbox isCheck={values.short} changeShot={handleChange} />
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import { PATH_NAME } from "../../utils/constants";
+import { MESSAGE, PATH_NAME } from "../../utils/constants";
 import "./Form.css";
 
 export default function Form({
@@ -10,8 +10,15 @@ export default function Form({
   isSending,
   isChanged,
   isError,
+  isSuccess,
 }) {
   const { AUTORIZATION, REGISTRATION } = PATH_NAME;
+  const {
+    ERROR_PROFILE,
+    ERROR_REGISTRATION,
+    ERROR_AUTORIZATION,
+    SUCCESS_PROFILE,
+  } = MESSAGE;
   return (
     <form noValidate name={name} onSubmit={onSubmit}>
       {children}
@@ -22,7 +29,7 @@ export default function Form({
               isError ? "login__error-request_active" : ""
             }`}
           >
-            {"При входе произошла ошибка."}
+            {ERROR_AUTORIZATION}
           </span>
           <button
             type="submit"
@@ -31,7 +38,7 @@ export default function Form({
             }`}
             disabled={!isValid}
           >
-            {"Войти"}
+            Войти
           </button>
         </>
       ) : name === REGISTRATION ? (
@@ -41,7 +48,7 @@ export default function Form({
               isError ? "login__error-request_active" : ""
             }`}
           >
-            {"При регистрации произошла ошибка."}
+            {ERROR_REGISTRATION}
           </span>
           <button
             type="submit"
@@ -49,23 +56,25 @@ export default function Form({
               isValid ? "" : "login__submit_disabled"
             }`}
           >
-            {"Зарегистрироваться"}
+            Зарегистрироваться
           </button>
         </>
       ) : (
         <>
           <span
-            className={`profile__error-request ${
-              isError ? "profile__error-request_active" : ""
+            className={`message ${
+              isError && "profile__error-request message_active"
+            }
+               ${isSuccess && "profile__success-request message_active"}
             }`}
           >
-            {"При обновлении профиля произошла ошибка."}
+            {isError ? ERROR_PROFILE : SUCCESS_PROFILE}
           </span>
           {isEditActive && (
             <button
               type="submit"
               className="profile__submit_save"
-              disabled={!isValid || isSending || isChanged }
+              disabled={!isValid || isSending || isChanged}
             >
               Сохранить
             </button>

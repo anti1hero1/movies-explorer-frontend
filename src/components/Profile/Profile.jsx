@@ -14,6 +14,8 @@ export default function Profile({
   isError,
   isEditActive,
   setEditActive,
+  isSuccess,
+  setSuccess,
 }) {
   const { values, errors, isInputValid, isValid, handleChange, reset } =
     useFormValidation();
@@ -29,6 +31,7 @@ export default function Profile({
 
   function handleEdit() {
     setEditActive(true);
+    setSuccess(false);
   }
 
   function handleSubmit(evt) {
@@ -50,6 +53,7 @@ export default function Profile({
           values.email === currentUser.email
         }
         isError={isError}
+        isSuccess={isSuccess}
       >
         <Input
           selectname={name}
